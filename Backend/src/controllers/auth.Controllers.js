@@ -53,6 +53,8 @@ async function registerUserController(req, res) {
       user: { username: newUser.username, email: newUser.email },
     });
   } catch (error) {
+    console.error("Register error:", err.response?.data?.message || err.message);
+    throw err;
     console.error("Registration Error:", error);
     return res
       .status(500)
@@ -98,8 +100,8 @@ async function loginUserController(req, res) {
       { expiresIn: "1d" },
     );
 
-    // Consider adding secure: true, sameSite: 'strict' for production
-    res.cookie("token", token, { httpOnly: true });
+   
+    res.cookie("token", token);
 
     return res.status(200).json({
       message: "User logged in successfully!",
@@ -133,8 +135,7 @@ async function logoutUserController(req, res) {
 
 async function getMeController(req, res) {
   try {
-    // Use await to execute the query and get the user document
-    // Also, explicitly exclude the password from the result
+   
     const user = await userModel.findById(req.user.id);
 
     if (!user) {
