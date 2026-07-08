@@ -7,7 +7,7 @@ function Home() {
   const [jobDescription, setJobDescription] = useState("");
   const [selfDescription, setSelfDescription] = useState("");
   const resumeInputRef = useRef();
-  const { loading, generateReport } = useInterview();
+  const { loading, generateReport  , reports  } = useInterview();
   const navigate = useNavigate();
 
   const handleGenerateReport = async (e) => {
@@ -188,6 +188,25 @@ function Home() {
             </button>
           </div>
         </form>
+
+
+        {reports.length > 0 && (
+            <section className="container mx-auto my-8 p-6 bg-black rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold mb-4 text-white">My Recent Reports</h2>
+                <ul className="space-y-4">
+                  {reports.map((report) => (
+                    <li key={report._id} className="flex justify-between items-center p-4 bg-gray-900 rounded-md hover:bg-gray-800 transition-colors duration-200">
+                      <a href={`/interview/${report._id}`} className=" text-pink-400 hover:underline text-lg font-medium">{report.title }</a>
+                      <p className="text-gray-400 text-sm">Generated on {report.createdAt} </p>
+                    </li>
+                  ))  }
+                </ul>
+            </section>
+
+        )}
+
+
+        
 
         {/* Footer */}
         <div className="mt-10 flex justify-center gap-10 text-sm text-gray-500">
