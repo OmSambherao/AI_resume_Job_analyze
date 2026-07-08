@@ -4,7 +4,7 @@ import Password from "../components/Password";
 import Username from "../components/Username";
 import Button from "../components/Button";
 import { Link } from "react-router";
-
+import Loading from "../components/Loading";
 import { useAuth } from "../Hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -25,6 +25,7 @@ function Register() {
     navigate("/");
   };
 
+  
   return (
     <div className="flex align-middle items-center justify-center h-screen bg-gray-950">
       <div className="w-full max-w-md rounded-xl bg-gray-900 p-8 shadow-lg">
@@ -33,7 +34,7 @@ function Register() {
         </h3>
 
         <form action="" className="flex flex-col gap-4" onSubmit={handelSubmit}>
-          <Username username={username} setusername={setUsername} />
+          <Username username={username} setUsername={setUsername} />
           <Email email={email} setEmail={setEmail} />
           <Password password={password} setPassword={setPassword} />
           <Button text="Register" />

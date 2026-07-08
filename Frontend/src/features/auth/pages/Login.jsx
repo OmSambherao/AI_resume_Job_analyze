@@ -2,7 +2,7 @@ import React from "react";
 import Email from "../components/Email";
 import Password from "../components/Password";
 import Button from "../components/Button";
-
+import Loading from "../components/Loading";
 import { Link } from "react-router";
 
 import { useAuth } from "../Hooks/useAuth";
@@ -27,11 +27,7 @@ function login() {
 
   if (loading) {
     return (
-      <main>
-        <div className="bg-black flex align-middle items-center text-white h-screen justify-center ">
-          <h5>loading ...</h5>
-        </div>
-      </main>
+      <Loading/>
     );
   }
 

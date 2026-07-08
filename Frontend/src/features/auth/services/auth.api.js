@@ -1,61 +1,67 @@
-import axios from "axios";
+import axios from "axios"
+
 
 const api = axios.create({
-    baseURL : "http://localhost:3000/api/auth", 
-    withCredentials : true 
-
+    baseURL: "http://localhost:3000",
+    withCredentials: true
 })
-const register = async (userame , email , password)=>{
-    try{
-       const respose = api.post("/register" , {
-            username , email , password
-        } );
-    
-        console.log(respose.data);
 
-    }catch {
-        console.log(err)
+export async function register({ username, email, password }) {
+
+    try {
+        const response = await api.post('/api/auth/register', {
+            username, email, password
+        })
+
+        return response.data
+
+    } catch (err) {
+        console.error("Register Error:", err.response?.data || err);
+        throw err;
     }
-}
 
-const login = async ( email , password)=>{
-    try{
-
-        const respose = api.post("/login" , {
-           email , password
-        } );
-    
-        console.log(respose.data);
-
-    }catch {
-        console.log(err)
     }
-}
 
-const logout = async ()=>{
-        try{
 
-        const respose = api.post("/logout" , {
-        
-        } );
-    
-        console.log(respose.data);
 
-    }catch {
+export async function login({ email, password }) {
+
+    try {
+
+        const response = await api.post("/api/auth/login", {
+            email, password
+        })
+
+        return response.data
+
+    } catch (err) {
         console.log(err)
     }
 
 }
 
-const getMe = async ()=>{
-    try{
+export async function logout() {
+    try {
 
-        const respose = api.get("/get-me" , { });
-        console.log(respose.data);
-    }catch {
+        const response = await api.get("/api/auth/logout")
+
+        return response.data
+
+    } catch (err) {
+
+    }
+}
+
+export async function getMe() {
+
+    try {
+
+        const response = await api.get("/api/auth/get-me")
+
+        return response.data
+
+    } catch (err) {
         console.log(err)
     }
 
 }
-
-export {register , login , logout , getMe} ; 
