@@ -10,10 +10,15 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await login({ email, password });
-      setUser(data.user);
+      
+      // SAFETY CHECK: Ensure data exists before setting the user
+      if (data && data.user) {
+        setUser(data.user);
+      } else {
+        throw new Error("Invalid response from server");
+      }
     } catch (err) {
-     
-      throw err;
+      throw err; // Let the form component catch this to show a UI error
     } finally {
       setLoading(false);
     }
@@ -23,11 +28,13 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await register({ username, email, password });
-      console.log(data);
       
-      setUser(data.user);
+      if (data && data.user) {
+        setUser(data.user);
+      } else {
+         throw new Error("Registration failed");
+      }
     } catch (err) {
-     
       throw err;
     } finally {
       setLoading(false);
@@ -37,10 +44,9 @@ export const useAuth = () => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      const data = await logout();
+      await logout(); // We don't need 'data' here
       setUser(null);
     } catch (err) {
-     
       console.error("Logout failed:", err);
     } finally {
       setLoading(false);
@@ -51,9 +57,14 @@ export const useAuth = () => {
     const getAndSetUser = async () => {
       try {
         const data = await getMe();
-        setUser(data.user);
+        // Safe access: only set user if data actually exists
+        if (data && data.user) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
       } catch (err) {
-        
+        // This silently catches the 401 on initial load, which is correct behavior
         setUser(null);
       } finally {
         setLoading(false);
@@ -61,7 +72,7 @@ export const useAuth = () => {
     };
 
     getAndSetUser();
-  }, []);
+  }, [setUser, setLoading]); // Added dependencies for React best practices
 
   return { user, loading, handleRegister, handleLogin, handleLogout };
 };
