@@ -151,7 +151,7 @@ async function getMeController(req, res) {
       },
     });
   } catch (error) {
-    console.error("Get Me Error:", error);
+    console.error("Get Me Error:", error.message );
     return res
       .status(500)
       .json({ message: "Server error while fetching user." });
