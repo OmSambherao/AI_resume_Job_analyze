@@ -30,7 +30,7 @@ app.use( '/api/auth' , authRouter);
 app.use( '/api/interview' , interviewRouter);
 
 
-app.listen(3000)
+
 
 
 module.exports = app ;
