@@ -53,7 +53,7 @@ async function registerUserController(req, res) {
         maxAge: 24 * 60 * 60 * 1000, 
       });
 
-    console.log(token);
+    
 
     return res.status(201).json({
       message: "User registered successfully!",
@@ -114,7 +114,7 @@ async function loginUserController(req, res) {
         sameSite: 'none',  // Allows the cookie to be sent between different domains
         maxAge: 24 * 60 * 60 * 1000, 
       });
-    console.log(token);
+    
     return res.status(200).json({
       message: "User logged in successfully!",
       user: { username: user.username, email: user.email },
