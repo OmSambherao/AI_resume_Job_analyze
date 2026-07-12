@@ -10,15 +10,10 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await login({ email, password });
-      
-      // SAFETY CHECK: Ensure data exists before setting the user
-      if (data && data.user) {
-        setUser(data.user);
-      } else {
-        throw new Error("Invalid response from server");
-      }
+      setUser(data.user);
     } catch (err) {
-      throw err; // Let the form component catch this to show a UI error
+     
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -28,13 +23,11 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const data = await register({ username, email, password });
+      console.log(data);
       
-      if (data && data.user) {
-        setUser(data.user);
-      } else {
-         throw new Error("Registration failed");
-      }
+      setUser(data.user);
     } catch (err) {
+     
       throw err;
     } finally {
       setLoading(false);
@@ -44,9 +37,10 @@ export const useAuth = () => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      await logout(); // We don't need 'data' here
+      const data = await logout();
       setUser(null);
     } catch (err) {
+     
       console.error("Logout failed:", err);
     } finally {
       setLoading(false);
@@ -57,14 +51,9 @@ export const useAuth = () => {
     const getAndSetUser = async () => {
       try {
         const data = await getMe();
-        // Safe access: only set user if data actually exists
-        if (data && data.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
+        setUser(data.user);
       } catch (err) {
-        // This silently catches the 401 on initial load, which is correct behavior
+        
         setUser(null);
       } finally {
         setLoading(false);
@@ -72,7 +61,7 @@ export const useAuth = () => {
     };
 
     getAndSetUser();
-  }, [setUser, setLoading]); // Added dependencies for React best practices
+  }, []);
 
   return { user, loading, handleRegister, handleLogin, handleLogout };
 };
