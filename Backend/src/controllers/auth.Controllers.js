@@ -10,7 +10,6 @@ const { get } = require("mongoose");
  * @register user
  * @description register user and send data user data in response 
  */
-
 async function registerUserController(req, res) {
   try {
     const { username, email, password } = req.body;
@@ -30,6 +29,7 @@ async function registerUserController(req, res) {
         message: "Username or email already exists.",
       });
     }
+    
     const hash = await bcrypt.hash(password, 10);
     const newUser = new userModel({
       username,
@@ -45,17 +45,21 @@ async function registerUserController(req, res) {
       { expiresIn: "1d" },
     );
 
-    // Consider adding secure: true, sameSite: 'strict' for production
-    res.cookie("token", token, { httpOnly: true });
+    // Secure cross-domain cookie settings
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,      // Required for cross-origin cookies in production
+        sameSite: 'none',  // Allows the cookie to be sent between different domains
+        maxAge: 24 * 60 * 60 * 1000, 
+    });
 
     return res.status(201).json({
       message: "User registered successfully!",
       user: { username: newUser.username, email: newUser.email },
     });
   } catch (error) {
-    console.error("Register error:", err.response?.data?.message || err.message);
-    throw err;
-    console.error("Registration Error:", error);
+    // Fixed: properly using 'error' and removed the 'throw err' that crashed the server
+    console.error("Registration Error:", error.message);
     return res
       .status(500)
       .json({ message: "Server error during registration." });
@@ -63,11 +67,9 @@ async function registerUserController(req, res) {
 }
 
 /**
- * 
- * @login user 
+ * * @login user 
  * @description login user and send data user data in response 
- * 
- */
+ * */
 async function loginUserController(req, res) {
   try {
     const { email, password } = req.body;
@@ -100,9 +102,14 @@ async function loginUserController(req, res) {
       { expiresIn: "1d" },
     );
 
-   
-    res.cookie("token", token);
-
+    // Secure cross-domain cookie settings
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,      // Required for cross-origin cookies in production
+        sameSite: 'none',  // Allows the cookie to be sent between different domains
+        maxAge: 24 * 60 * 60 * 1000, 
+    });
+    
     return res.status(200).json({
       message: "User logged in successfully!",
       user: { username: user.username, email: user.email },
@@ -114,11 +121,9 @@ async function loginUserController(req, res) {
 }
 
 /**
- * 
- * @logout user 
+ * * @logout user 
  * @description add cookie to the blacklist 
- * 
- */
+ * */
 async function logoutUserController(req, res) {
   const token = req.cookies.token;
 
@@ -133,9 +138,12 @@ async function logoutUserController(req, res) {
   });
 }
 
+/**
+ * * @get current user
+ * */
 async function getMeController(req, res) {
   try {
-   
+    // Fixed: Reverted to req.user.id to match the JWT payload
     const user = await userModel.findById(req.user.id);
 
     if (!user) {
@@ -143,6 +151,7 @@ async function getMeController(req, res) {
         message: "User not found",
       });
     }
+    
     res.status(200).json({
       user: {
         id: user._id,
@@ -151,7 +160,7 @@ async function getMeController(req, res) {
       },
     });
   } catch (error) {
-    console.error("Get Me Error:", error);
+    console.error("Get Me Error:", error.message);
     return res
       .status(500)
       .json({ message: "Server error while fetching user." });
