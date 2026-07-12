@@ -1,70 +1,57 @@
-import axios from "axios"
-
+import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://ai-resume-job-analyze-backend.onrender.com",
-    withCredentials: true
-})
+  baseURL: "http://localhost:8000",
+  withCredentials: true,
+});
 
 export async function register({ username, email, password }) {
+  try {
+    const response = await api.post("/api/auth/register", {
+      username,
+      email,
+      password,
+    });
 
-    try {
-        const response = await api.post('/api/auth/register', {
-            username, email, password
-        })
-
-        return response.data
-
-    } catch (err) {
-        console.error("Register Error:", err.response?.data || err);
-        throw err;
-    }
-
-    }
-
-
+    return response.data;
+  } catch (err) {
+    console.error("Register Error:", err.response?.data || err);
+    throw err;
+  }
+}
 
 export async function login({ email, password }) {
+  try {
+    const response = await api.post("/api/auth/login", {
+      email,
+      password,
+    });
 
-    try {
-
-        const response = await api.post("/api/auth/login", {
-            email, password
-        })
-
-        return response.data
-
-    } catch (err) {
-        console.error("Register Error:", err.response?.data || err);
-        throw err;
-    }
-
+    return response.data;
+  } catch (err) {
+    console.error("Register Error:", err.response?.data || err);
+    throw err;
+  }
 }
 
 export async function logout() {
-    try {
+  try {
+    const response = await api.get("/api/auth/logout");
 
-        const response = await api.get("/api/auth/logout")
-
-        return response.data
-
-    } catch (err) {
-        console.error("Register Error:", err.response?.data || err);
-        throw err;
-    }
+    return response.data;
+  } catch (err) {
+    console.error("Register Error:", err.response?.data || err);
+    throw err;
+  }
 }
 
 export async function getMe() {
+  try {
+    const response = await api.get("/api/auth/get-me");
 
-    try {
-
-        const response = await api.get("/api/auth/get-me")
-
-        return response.data
-
-    } catch (err) {
-        console.error("Register Error:", err.response?.data || err);
-        throw err;
-    }
-
+    return response.data;
+  } catch (err) {
+    console.error("Register Error:", err.response?.data || err);
+    throw err;
+  }
 }
